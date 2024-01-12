@@ -5,9 +5,11 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 var cookieParser = require("cookie-parser");
 const sendEmail = require("../utils/sendEmail");
+const crypto = require("crypto");
 
 const userRouter = express.Router();
 
+//SignUp
 userRouter.post("/register", async (req, res) => {
   const { name, email, password, role } = req.body;
 
@@ -43,6 +45,7 @@ userRouter.post("/register", async (req, res) => {
   }
 });
 
+//Login
 userRouter.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -74,10 +77,7 @@ userRouter.post("/login", async (req, res) => {
   }
 });
 
-userRouter.get("/test", Auth, (req, res) => {
-  res.send("test");
-});
-
+//Logout
 userRouter.get("/logout", Auth, (req, res) => {
   try {
     res.cookie("token", null, {
@@ -91,6 +91,7 @@ userRouter.get("/logout", Auth, (req, res) => {
   }
 });
 
+//Forgot Password and sending mail
 userRouter.post("/password/forgot", async (req, res) => {
   const user = await userModel.findOne({ email: req.body.email });
 
@@ -111,23 +112,68 @@ userRouter.post("/password/forgot", async (req, res) => {
   if you are not requieset this email please ignore it `;
 
   try {
-
     await sendEmail({
-      email:user.email,
-      subject:"Ecommerce Password Recovary",
-      message
-
+      email: user.email,
+      subject: "Ecommerce Password Recovary",
+      message,
     });
 
-    res.status(200).send({message:`Email sent to ${user.email} successfully`})
-    
+    res
+      .status(200)
+      .send({ message: `Email sent to ${user.email} successfully` });
   } catch (error) {
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
     await user.save({ validateBeforeSave: false });
-    res.status(401).send({message:error.message,error})
+    res.status(401).send({ message: error.message, error });
+  }
+});
+
+//Reset Password
+userRouter.put("/password/reset/:token", async (req, res) => {
+  const { password, confirmPassword } = req.body;
+  try {
+    // Creating Token Hash
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(req.params.token)
+      .digest("hex");
+
+    const user = await userModel.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
 
 
+    if (!user) {
+      res
+        .status(404)
+        .send({ message: "Reset Password Token is invalid or expired" });
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.jwt_secret, {
+      expiresIn: "1hr",
+    });
+
+    res.cookie("token", token);
+
+    if (password !== confirmPassword) {
+      res
+        .status(404)
+        .send({ message: "Reset Password dose not match confirm password" });
+    }
+
+    const hash = await bcrypt.hash(password, 8);
+
+    user.password = hash;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    res.status(200).send({Token: token });
+  } catch (error) {
+    res.status(401).send({ message: error.message, error });
   }
 });
 
