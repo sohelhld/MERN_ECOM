@@ -1,14 +1,16 @@
 const express = require('express');
 const { productModel } = require('../models/product.model');
 const ApiFeatures = require('../utils/apiFeatures');
+const { Auth, authorizeRoles } = require('../middleware/auth.middleware');
 
 const productRoute = express.Router();
 
 
 //Creat Product ---Admin
-productRoute.post('/new',async(req,res)=>{
+productRoute.post('/new',Auth,authorizeRoles("admin"),async(req,res)=>{
     const payload = req.body
     try {
+        req.body.user = req.user.id
         const product  = new productModel(payload)
 
         await product.save()
@@ -21,7 +23,7 @@ productRoute.post('/new',async(req,res)=>{
 
 //Get All Product
 
-productRoute.get("/all",async(req,res)=>{
+productRoute.get("/all",Auth,authorizeRoles("admin"),async(req,res)=>{
     const resultPerPage = 5
     const productCount = await productModel.countDocuments()
     try {
@@ -56,7 +58,7 @@ productRoute.get("/",async(req,res)=>{
 })
 
 //Get Product delatais
-productRoute.get("/:id",async(req,res)=>{
+productRoute.get("/:id",Auth,authorizeRoles("admin"),async(req,res)=>{
     const {id}= req.params
     try {
 
@@ -75,7 +77,7 @@ productRoute.get("/:id",async(req,res)=>{
 
 
 //Update Product---Admin
-productRoute.patch("/:id",async(req,res)=>{
+productRoute.patch("/:id",Auth,authorizeRoles("admin"),async(req,res)=>{
     const {id} = req.params
     const payload = req.body
     try {
@@ -96,7 +98,7 @@ productRoute.patch("/:id",async(req,res)=>{
 
 
 //Delete Product ----admin
-productRoute.delete("/:id",async(req,res)=>{
+productRoute.delete("/:id",Auth,authorizeRoles("admin"),async(req,res)=>{
     const {id} = req.params
    
     try {
@@ -114,5 +116,6 @@ productRoute.delete("/:id",async(req,res)=>{
         res.status(404).send(error.message)
     }
 })
+
 
 module.exports = {productRoute}
