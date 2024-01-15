@@ -3,6 +3,7 @@ var cookieParser = require('cookie-parser')
 const { connected } = require('./db')
 const { productRoute } = require('./routes/product.route')
 const { userRouter } = require('./routes/user.route')
+const { orderRouter } = require('./routes/orderRouter')
 
 require("dotenv").config()
 
@@ -13,6 +14,7 @@ app.use(cookieParser())
 
 app.use("/users",userRouter)
 app.use("/product",productRoute)
+app.use("/order",orderRouter)
 
 
 app.get("/",(req,res)=>{

@@ -15,7 +15,7 @@ const productSchema = mongoose.Schema({
         require:[true,"Please provide Product Price"],
         maxLength:[8,"Price cannot exceed 8 numbers"]
     },
-    rating:{
+    ratings:{
         type:Number,
         default:0
     },
@@ -36,7 +36,7 @@ const productSchema = mongoose.Schema({
         require:[true,"Please provide Product Category"],
         
     },
-    stock:{
+    Stock:{
         type:Number,
         require:[true,"Please provide Product stock"],
         default:1
@@ -47,12 +47,16 @@ const productSchema = mongoose.Schema({
     },
     reviews:[
         {
+            user:{
+                type:mongoose.Schema.ObjectId,
+                require:true
+            },
             name:{
                 type:String,
                 require:true
             },
             rating:{
-                type:String,
+                type:Number,
                 require:true
             },
             comment:{

@@ -1,6 +1,6 @@
 const express = require("express");
 const { userModel } = require("../models/userModel");
-const { Auth } = require("../middleware/auth.middleware");
+const { Auth, authorizeRoles } = require("../middleware/auth.middleware");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 var cookieParser = require("cookie-parser");
@@ -16,7 +16,9 @@ userRouter.post("/register", async (req, res) => {
   try {
     const isUserPresent = await userModel.findOne({ email });
     if (isUserPresent) {
-      res.status(400).send({ message: "User is already present plz login" });
+      return res
+        .status(400)
+        .send({ message: "User is already present plz login" });
     }
 
     const hash = await bcrypt.hash(password, 8);
@@ -54,7 +56,9 @@ userRouter.post("/login", async (req, res) => {
       .findOne({ email })
       .select("+password");
     if (!isUserPresent) {
-      res.status(400).send({ message: "User is not register plz signup 1st" });
+      return res
+        .status(400)
+        .send({ message: "User is not register plz signup 1st" });
     }
 
     const isPasswordCorrect = await bcrypt.compare(
@@ -62,7 +66,7 @@ userRouter.post("/login", async (req, res) => {
       isUserPresent.password
     );
     if (!isPasswordCorrect) {
-      res.status(400).send({ message: "User password is not Correct" });
+      return res.status(400).send({ message: "User password is not Correct" });
     }
 
     const token = jwt.sign({ id: isUserPresent._id }, process.env.jwt_secret, {
@@ -71,7 +75,7 @@ userRouter.post("/login", async (req, res) => {
 
     res.cookie("token", token);
 
-    res.status(200).send({ message: " user login succesfuly", token: token });
+    res.status(200).send({ message: "user login succesfuly", token: token });
   } catch (error) {
     res.status(401).send(error.message);
   }
@@ -93,7 +97,7 @@ userRouter.get("/logout", Auth, (req, res) => {
 
 //Forgot Password and sending mail
 userRouter.post("/password/forgot", async (req, res) => {
-  const user = await userModel.findOne({ email: req.body.email });
+  const user = await userModel.findOne({ email: email });
 
   if (!user) {
     return res.status(401).send({ message: "user not found" });
@@ -144,9 +148,8 @@ userRouter.put("/password/reset/:token", async (req, res) => {
       resetPasswordExpire: { $gt: Date.now() },
     });
 
-
     if (!user) {
-      res
+      return res
         .status(404)
         .send({ message: "Reset Password Token is invalid or expired" });
     }
@@ -158,7 +161,7 @@ userRouter.put("/password/reset/:token", async (req, res) => {
     res.cookie("token", token);
 
     if (password !== confirmPassword) {
-      res
+      return res
         .status(404)
         .send({ message: "Reset Password dose not match confirm password" });
     }
@@ -171,10 +174,143 @@ userRouter.put("/password/reset/:token", async (req, res) => {
 
     await user.save();
 
-    res.status(200).send({Token: token });
+    res.status(200).send({ Token: token });
   } catch (error) {
     res.status(401).send({ message: error.message, error });
   }
 });
+
+//get User Details
+userRouter.get("/me", Auth, async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user.id);
+    console.log(req.user.id);
+    res.status(200).send({ message: "User Details", user });
+  } catch (error) {
+    res.status(401).send({ message: error.message });
+  }
+});
+
+//Update Password
+userRouter.put("/password/update", Auth, async (req, res) => {
+  const { oldPassword, newPassword, confirmPassword } = req.body;
+  try {
+    const user = await userModel.findById(req.user.id).select("+password");
+
+    // const isPasswordMatched = await user.comparePassword(oldPassword);
+    const isPasswordMatched = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isPasswordMatched) {
+      return res.status(400).send({ message: "Old Password is incorrect" });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).send({ message: "Password does not match" });
+    }
+
+    //set token
+    const token = jwt.sign({ id: user._id }, process.env.jwt_secret, {
+      expiresIn: "1hr",
+    });
+
+    res.cookie("token", token);
+
+    const hashPassword = await bcrypt.hash(newPassword, 8);
+
+    user.password = hashPassword;
+
+    await user.save();
+
+    res.status(200).send({ user, token: token });
+  } catch (error) {
+    res.status(401).send({ message: error.message });
+  }
+});
+
+//Update User Profile
+userRouter.put("/me/update", Auth, async (req, res) => {
+  const { name, email } = req.body;
+  try {
+    const newUserData = {
+      name: name,
+      email: email,
+    };
+
+    //we will add cloudinary later
+
+    const user = await userModel.findByIdAndUpdate(req.user.id, newUserData, {
+      new: true,
+      runValidators: true,
+      useFindAndModify: false,
+    });
+
+    res.status(200).send({ message: "profie is updated" });
+  } catch (error) {
+    res.status(401).send({ message: error.message });
+  }
+});
+
+//Get All users---admin
+userRouter.get("/admin/users",Auth,authorizeRoles("admin"), async (req, res) => {
+  try {
+    const users = await userModel.find();
+
+    res.status(200).send({ message: "All user", users });
+  } catch (error) {
+    res.status(401).send({ message: error.message });
+  }
+});
+
+// Get Single user---admin
+userRouter.get("/admin/users/:id",Auth,authorizeRoles("admin"),async(req,res)=>{
+  try {
+    const user  = await userModel.findById(req.params.id);
+    if(!user){
+      return res.status(400).send({message:"User Dose Not Exiset"})
+    }
+    res.status(200).send(user)
+  } catch (error) {
+    res.status(401).send({ message: error.message });
+  }
+})
+
+// Upadate User ROle ----admin
+userRouter.put("/admin/users/:id",Auth,authorizeRoles("admin"),async(req,res)=>{
+  try {
+    const newUserData = {
+      name:req.body.name,
+      email:req.body.email,
+      role:req.body.role
+    }
+
+   const user=  await userModel.findByIdAndUpdate(req.params.id,newUserData,{
+      new:true,
+      runValidators:true,
+      useFindAndModify:false
+    })
+
+    res.status(200).send(user)
+  } catch (error) {
+    res.status(401).send({ message: error.message });
+  }
+})
+
+//Delete User --- admin
+userRouter.delete("/admin/users/:id",Auth,authorizeRoles("admin"),async(req,res)=>{
+  try {
+    const user  = await userModel.findByIdAndDelete(req.params.id);
+    if(!user){
+      return res.status(400).send({message:"User Dose Not Exiset"})
+    }
+
+    // work to do here
+
+    // await user.remove()
+
+    res.status(200).send({message:"User is successfully removed"})
+  } catch (error) {
+    res.status(401).send({ message: error.message });
+  }
+})
 
 module.exports = { userRouter };
