@@ -3,11 +3,11 @@ import Navbar from './components/Navbar/Navbar';
 import AllRoutes from './routes/AllRoutes';
 
 function App() {
+  console.log(process.env.REACT_APP_API_LOCALHOST)
   return (
     <div className="App">
-      <h1>Rocky App</h1>
-      <Navbar/>
-      <AllRoutes/>
+      <Navbar />
+      <AllRoutes />
     </div>
   );
 }
