@@ -1,8 +1,12 @@
 import React from 'react'
+import ProductForm from '../../components/Admin/AdminAddProduct'
 
 const Admin = () => {
   return (
-    <div>Admin</div>
+    <div>
+    <ProductForm/>
+    
+    </div>
   )
 }
 
