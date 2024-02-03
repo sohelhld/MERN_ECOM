@@ -21,6 +21,7 @@ import {
   ChevronRightIcon,
 } from '@chakra-ui/icons'
 import Logo from "../../utils/images/logo.png"
+import { Link } from 'react-router-dom'
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure()
 
@@ -29,7 +30,7 @@ export default function Navbar() {
       position="fixed"
       top="0"
       left="0"
-      width="100%"
+      width={"100%"}
       backgroundColor="blue.500"
       color="white"
       // padding="1rem"
@@ -62,7 +63,9 @@ export default function Navbar() {
             textAlign={useBreakpointValue({ base: 'center', md: 'left' })}
             fontFamily={'heading'}
             color={useColorModeValue('gray.800', 'white')}>
-            <Image src= {Logo} _hover={{cursor: "pointer"}} h={10} w={20} alt="logo" />
+           <Link to={'/'}>
+           <Image src= {Logo} _hover={{cursor: "pointer"}} h={10} w={20} alt="logo" />
+           </Link> 
           </Text>
 
           <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
@@ -224,7 +227,9 @@ const MobileNavItem = ({ label, children, href }) => {
 
 const NAV_ITEMS = [
   {
-    label: 'Home'
+    label: 'Home',
+    href: '/',
+    
   },
   {
     label: 'Priducts ▼',
