@@ -112,7 +112,7 @@ const loader = useSelector(st=>st.authReducer.isSignupLoading);
                 {loader ? <ClipLoader/> : "Sign Up"}
               </Button>
             </form>
-            <Text>{`Already Have A Accout`} <span color='blue'> <Link color='blue' to={"/login"}>Login Here</Link></span> </Text>
+            <Text>{`Already Have A Accout`} <span color='blue'> <Link color='blue' to={"/user/login"}>Login Here</Link></span> </Text>
 
           </VStack>
         </motion.div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import ProductForm from '../../components/Admin/AdminAddProduct'
+import ProductForm from '../../components/Admin/Products/AdminAddProduct'
 
 const Admin = () => {
   return (
