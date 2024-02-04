@@ -236,15 +236,19 @@ const NAV_ITEMS = [
     children: [
       {
         label: 'Mobile',
+        href: '/products/mobile',
       },
       {
         label: 'Laptop',
+        href: '/products/laptop',
       },
       {
         label: 'Clothing',
+        href: '/products/cloths',
       },
       {
         label: 'Groceries',
+        href: '/products/groceries',
       },
     ],
   },

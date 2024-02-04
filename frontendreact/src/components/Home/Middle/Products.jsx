@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Image, Text, VStack, HStack, Badge, Button } from '@chakra-ui/react';
+import { Box, Image, Text, VStack, HStack, Badge, Button, Heading, Center } from '@chakra-ui/react';
 import Shoes from "../../../utils/Home/products/shoes.jpg";
 import Phone from "../../../utils/Home/products/inphone.jpg";
 import tshirt from "../../../utils/Home/products/tshirt.jpg";
@@ -15,6 +15,9 @@ const products = [
 const Products = () => {
     return (
         <VStack align="start" spacing={4} p={4}>
+        <Center>
+        <Heading>Recomented For You</Heading>
+        </Center> 
             <HStack spacing={4} flexWrap="wrap">
                 {products.map((product, index) => (
                     <Box key={index} borderWidth="1px" borderRadius="lg" overflow="hidden" p={4} flex="1 0 300px">

@@ -37,3 +37,40 @@
     transform: rotate(360deg);
   }
 }
+.app-container {
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes slideAndFadeIn {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 3;
+  }
+}
+
+.app-container > * {
+  animation: slideAndFadeIn 3s ease-in-out forwards;
+  transition: opacity 3s ease-in-out;
+}
+/* 
+.app-container > * {
+} */
+.heading-text {
+  font-size: 40px;
+}
+@media (max-width: 768px) {
+  .heading-text {
+    font-size: 20px;
+  }
+  .margin {
+    margin: 0 7%;
+  }
+  .margin-form {
+    margin: 0 13%;
+  }
+}
