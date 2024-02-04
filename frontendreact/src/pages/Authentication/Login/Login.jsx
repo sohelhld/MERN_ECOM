@@ -96,7 +96,9 @@ function Login() {
               {loader ? <ClipLoader/> :  "Login" }
               </Button>
             </form>
-            <Text>{`Don't Have Any Accoutn`} <Link color='blue' to={"/signup"}>Create A Accoutn</Link> </Text>
+            <Text>{`Don't Have Any Accoutn`} <Link color='blue' to={"/user/signup"}>Create A Accoutn</Link> </Text>
+            <Text><Link color='blue' to={"/user/forgetpass"}>Forget Password?</Link> </Text>
+            
           </VStack>
         </motion.div>
       </Box>
