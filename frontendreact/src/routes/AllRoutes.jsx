@@ -5,6 +5,7 @@ import Login from '../pages/Authentication/Login/Login'
 import Signup from '../pages/Authentication/Signup/Signup'
 import Payment from '../pages/Payment/Payment'
 import Products from '../pages/Products/Products'
+import SingleProduct from '../pages/Products/SingleProduct'
 import About from '../pages/About/About'
 import Contact from '../pages/Contact/Contact'
 // import Admin from '../pages/Admin/Admin'
@@ -27,6 +28,7 @@ const AllRoutes = () => {
     <Route path='/user/resetpass' element={<ResetPasswordForm/>}/>
     <Route path='/payment' element={<Payment/>}/>
     <Route path='/products' element={<Products/>}/>
+    <Route path = '/product/:id' element = {<SingleProduct/>}/>
     <Route path='/about' element={<About/>}/>
     <Route path='/contact' element={<Contact/>}/>
     <Route path='/admin/product/add' element={<ProductForm/>}/>
