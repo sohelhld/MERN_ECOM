@@ -26,7 +26,8 @@ productRoute.post(
 
 //Get All Product
 
-productRoute.get("/all", Auth, authorizeRoles("admin"), async (req, res) => {
+productRoute.get("/all", authorizeRoles("admin"), async (req, res) => {
+  console.log("/all")
   const resultPerPage = 5;
   const productCount = await productModel.countDocuments();
   try {
@@ -52,6 +53,23 @@ productRoute.get("/", async (req, res) => {
     res.status(404).send(error.message);
   }
 });
+
+// Get Single Product
+
+productRoute.get('/:id', async (req,res)=>{
+  try {
+    const {id} = req.params;
+
+    const product = await productModel.findById(id);
+    if (!product) {
+      res.status(404).json({message: 'Product not found'});
+    }
+    res.status(200).json({product});
+  } catch (error) {
+    res.status(404).send(error.message);
+  }
+})
+
 
 //Get Product delatais
 productRoute.get(
