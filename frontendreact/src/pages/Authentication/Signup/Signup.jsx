@@ -3,9 +3,10 @@ import { ChakraProvider, CSSReset, Box, Heading, FormControl, FormLabel, Input, 
 import { motion } from 'framer-motion';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
-import { userRegister } from '../../../redux/Authtication/action';
+// import { userRegister } from '';
 import { Link } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
+import { userRegister } from '../../../redux/Authentication/action';
 
 function Signup() {
   const [formData, setFormData] = useState({

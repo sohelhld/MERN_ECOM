@@ -3,9 +3,10 @@ import { ChakraProvider, CSSReset, Box, Heading, FormControl, FormLabel, Input, 
 import { motion } from 'framer-motion';
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import icons for show/hide password
 import { useDispatch, useSelector } from 'react-redux';
-import { UserLogin } from '../../../redux/Authtication/action';
+// import { UserLogin } from '../../../redux/Authtication/action';
 import { ClipLoader } from 'react-spinners';
 import { Link } from 'react-router-dom';
+import { UserLogin } from '../../../redux/Authentication/action';
 
 function Login() {
   const [formData, setFormData] = useState({
