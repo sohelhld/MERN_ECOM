@@ -5,7 +5,7 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Import icons for show/hid
 import { useDispatch, useSelector } from 'react-redux';
 // import { UserLogin } from '../../../redux/Authtication/action';
 import { ClipLoader } from 'react-spinners';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { UserLogin } from '../../../redux/Authentication/action';
 
 function Login() {
@@ -16,7 +16,11 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const toast = useToast();
   const dispatch = useDispatch();
-  const loader = useSelector(st=>st.authReducer.isLoginLoading);
+  const navigate = useNavigate();
+  // const location = useLocation();
+  const loader = useSelector(st => st.authReducer.isLoginLoading);
+  const isLoginError = useSelector(st => st.authReducer.isLoginError);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -35,9 +39,14 @@ function Login() {
     // console.log('Email:', formData.email);
     // console.log('Password:', formData.password);
     // Add your logic for authentication or other actions
+    // console.log(location);
 
     // if(!formData.email && !formData.password){
-      dispatch(UserLogin({email : formData.email, password : formData.password}, toast))
+    dispatch(UserLogin({ email: formData.email, password: formData.password }, toast)).then((res) => {
+     if(!isLoginError){
+       navigate(-1);
+     }
+    })
     // }
 
   };
@@ -48,7 +57,7 @@ function Login() {
       <Box
         display="flex"
         alignItems="center"
-        justifyContent="center"
+        // justifyContent="center"
         height="100vh"
         boxShadow="lg"
         p={6}
@@ -94,12 +103,12 @@ function Login() {
               </FormControl>
 
               <Button m={5} colorScheme="teal" type="submit">
-              {loader ? <ClipLoader/> :  "Login" }
+                {loader ? <ClipLoader /> : "Login"}
               </Button>
             </form>
             <Text>{`Don't Have Any Accoutn`} <Link color='blue' to={"/user/signup"}>Create A Accoutn</Link> </Text>
             <Text><Link color='blue' to={"/user/forgetpass"}>Forget Password?</Link> </Text>
-            
+
           </VStack>
         </motion.div>
       </Box>

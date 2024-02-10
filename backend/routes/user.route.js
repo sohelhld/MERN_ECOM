@@ -69,7 +69,7 @@ userRouter.post("/login", async (req, res) => {
       return res.status(400).send({ message: "User password is not Correct" });
     }
 
-    const token = jwt.sign({ id: isUserPresent._id }, process.env.jwt_secret, {
+    const token = jwt.sign({ userid: isUserPresent._id,name : isUserPresent.name, email : isUserPresent.email }, process.env.jwt_secret, {
       expiresIn: "1hr",
     });
 
@@ -97,7 +97,7 @@ userRouter.get("/logout", Auth, (req, res) => {
 
 //Forgot Password and sending mail
 userRouter.post("/password/forgot", async (req, res) => {
-  const user = await userModel.findOne({ email: email });
+  const user = await userModel.findOne({ email: req.body.email });
 
   if (!user) {
     return res.status(401).send({ message: "user not found" });
@@ -108,9 +108,7 @@ userRouter.post("/password/forgot", async (req, res) => {
 
   await user.save({ validateBeforeSave: false });
 
-  const resetPasswordUrl = `${req.protocol}://${req.get(
-    "host"
-  )}/users/password/reset/${resetToken}`;
+  const resetPasswordUrl = `${resetToken}`;
 
   const message = `Your password reset token is :-\n\n ${resetPasswordUrl} \n\n
   if you are not requieset this email please ignore it `;
