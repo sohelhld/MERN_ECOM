@@ -3,7 +3,7 @@ import Product from "./Product.js";
 import './Home.css';
 import { FaMouse } from "react-icons/fa";
 import MetaData from '../layout/MetaData.js';
-import { UseSelector,useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { getProduct } from '../../actions/productAction.js';
 
 

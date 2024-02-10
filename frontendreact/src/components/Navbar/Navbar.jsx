@@ -93,10 +93,10 @@ const DesktopNav = () => {
         <Box key={navItem.label}>
           <Popover trigger={'hover'} placement={'bottom-start'}>
             <PopoverTrigger>
-              <Box
-                as="a"
+              <Link
+                // as="a"
                 p={2}
-                href={navItem.href ?? '#'}
+                to={navItem.href ?? '#'}
                 fontSize={'sm'}
                 fontWeight={500}
                 color={linkColor}
@@ -105,7 +105,7 @@ const DesktopNav = () => {
                   color: linkHoverColor,
                 }}>
                 {navItem.label}
-              </Box>
+              </Link>
             </PopoverTrigger>
 
             {navItem.children && (
@@ -132,9 +132,9 @@ const DesktopNav = () => {
 
 const DesktopSubNav = ({ label, href, subLabel }) => {
   return (
-    <Box
-      as="a"
-      href={href}
+    <Link
+      // as="a"
+      to={href}
       role={'group'}
       display={'block'}
       p={2}
@@ -161,7 +161,7 @@ const DesktopSubNav = ({ label, href, subLabel }) => {
           <Icon color={'pink.400'} w={5} h={5} as={ChevronRightIcon} />
         </Flex>
       </Stack>
-    </Box>
+    </Link>
   )
 }
 
@@ -180,10 +180,10 @@ const MobileNavItem = ({ label, children, href }) => {
 
   return (
     <Stack spacing={4} onClick={children && onToggle}>
-      <Box
+      <Link
         py={2}
-        as="a"
-        href={href ?? '#'}
+        
+        to={href ?? '#'}
         justifyContent="space-between"
         alignItems="center"
         _hover={{
@@ -201,7 +201,7 @@ const MobileNavItem = ({ label, children, href }) => {
             h={6}
           />
         )}
-      </Box>
+      </Link>
 
       <Collapse in={isOpen} animateOpacity style={{ marginTop: '0!important' }}>
         <Stack
@@ -213,9 +213,9 @@ const MobileNavItem = ({ label, children, href }) => {
           align={'start'}>
           {children &&
             children.map((child) => (
-              <Box as="a" key={child.label} py={2} href={child.href}>
+              <Link  key={child.label} py={2} to={child.href}>
                 {child.label}
-              </Box>
+              </Link>
             ))}
         </Stack>
       </Collapse>
@@ -235,20 +235,16 @@ const NAV_ITEMS = [
     label: 'Priducts ▼',
     children: [
       {
-        label: 'Mobile',
-        href: '/products/mobile',
+        label: 'Electronics',
+        href: '/products/electronics',
       },
       {
         label: 'Laptop',
         href: '/products/laptop',
       },
       {
-        label: 'Clothing',
-        href: '/products/cloths',
-      },
-      {
-        label: 'Groceries',
-        href: '/products/groceries',
+        label: 'Grocery',
+        href: '/products/grocery',
       },
     ],
   },

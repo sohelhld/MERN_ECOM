@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllProducts } from '../../redux/Products/action';
+// import { getAllProducts } from '../../redux/Products/action';
 import { Box, Flex, Heading, Checkbox, VStack, Spacer } from '@chakra-ui/react';
-import ProductCard from '../../components/Products/Products';
-import PageLoader from '../../components/PageLoader/PageLoader';
+import { getAllProducts } from '../../../redux/Products/action';
+import PageLoader from '../../../components/PageLoader/PageLoader';
+import ProductCard from '../../../components/Products/Products';
+// import ProductCard from '../../components/Products/Products';
+// import PageLoader from '../../components/PageLoader/PageLoader';
 
-const Products = () => {
+const ProductsLaptop = () => {
   const dispatch = useDispatch();
   const allProducts = useSelector((state) => state.producdtReducer.allProducts);
 
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState(["Laptop"]);
   const loader = useSelector((state) => state.producdtReducer.getAllProductsIsLoading);
 
   console.log(allProducts);
@@ -109,4 +112,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default ProductsLaptop;
