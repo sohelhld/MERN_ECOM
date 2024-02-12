@@ -21,16 +21,18 @@ const userSchema = mongoose.Schema({
     minLength: [7, "Password should be at least 7 characters"],
     select: false,
   },
-  avater: {
-    public_id: {
-      type: String,
-      required: true,
-    },
-    url: {
-      type: String,
-      required: true,
-    },
-  },
+  // avater: {
+  //   public_id: {
+  //     type: String
+  //   },
+  //   url: {
+  //     type: String
+  //   },
+  //   default: {
+  //     type:String,
+  //     default: "avatar"
+  //   }
+  // },
   role: {
     type: String,
     default: "user",
@@ -39,9 +41,11 @@ const userSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 });
+
 
 
 userSchema.methods.getResetPasswordToken = function () {
