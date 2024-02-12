@@ -7,7 +7,13 @@ import {
     ADDTOCART_PRODUCT_FAIL,
     GETFROMCART_PRODUCT_REQUEST,
     GETFROMCART_PRODUCT_SUCESS,
-    GETFROMCART_PRODUCT_FAIL
+    GETFROMCART_PRODUCT_FAIL,
+    UPDATEFROMCART_PRODUCT_REQUEST,
+    UPDATEFROMCART_PRODUCT_SUCESS,
+    UPDATEFROMCART_PRODUCT_FAIL,
+    DELETEFROMCART_PRODUCT_REQUEST,
+    DELETEFROMCART_PRODUCT_SUCESS,
+    DELETEFROMCART_PRODUCT_FAIL
 } from "./actionTypes"
 const api = process.env.REACT_APP_API_LOCALHOST;
 export const getAllProducts = () => (dispatch) => {
@@ -71,19 +77,48 @@ export const productAddToCart = (data, toast, token) => async (dispatch) => {
 }
 
 
-export const getProductFromCart = (token) => async(dispatch) => {
+export const getProductFromCart = (token) => async (dispatch) => {
     dispatch({ type: GETFROMCART_PRODUCT_REQUEST });
-    return axios.get(`${api}/`, {
+    return axios.get(`${api}/cart/`, {
         headers: {
             "Authorization": "Bearer " + token,
             "Accept": "application/json"
         }
     }).then((res) => {
-        console.log(res.data);
+        console.log(res.data.product);
         dispatch({ type: GETFROMCART_PRODUCT_SUCESS, payload: res.data.product });
-
     }).catch((err) => {
         dispatch({ type: GETFROMCART_PRODUCT_FAIL });
         console.log(err);
+    })
+}
+
+export const updateCartProduct = (id, data, token) => (dispatch) => {
+    dispatch({ type: UPDATEFROMCART_PRODUCT_REQUEST });
+    return axios.post(`${api}/cart/${id}`, data, {
+        headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+        }
+    }).then((res) => {
+        console.log(res.data);
+        dispatch({ type: UPDATEFROMCART_PRODUCT_SUCESS });
+    }).catch((err) => {
+        dispatch({ type: UPDATEFROMCART_PRODUCT_FAIL });
+    })
+}
+
+
+export const deleteProductfromCart = (id, token) => (dispatch) => {
+    dispatch({ type: DELETEFROMCART_PRODUCT_REQUEST });
+    return axios.delete(`${api}/cart/${id}`, {
+        headers: {
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
+        }
+    }).then((res) => {
+        dispatch({ type: DELETEFROMCART_PRODUCT_SUCESS });
+    }).catch((err) => {
+        dispatch({ type: DELETEFROMCART_PRODUCT_FAIL });
     })
 }
