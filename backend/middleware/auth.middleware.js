@@ -4,10 +4,8 @@ require("dotenv").config();
 
 const Auth = async (req, res, next) => {
   try {
-    const  token  = req.cookies.token || req.headers.authorization?.split(' ')[1];
-    // console.log("token",token)
-    
-console.log(token);
+    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+    console.log({ token , line: "0"});
     if (!token)
       return res.status(401).send({ message: "user is not authinticated " });
 
@@ -26,19 +24,19 @@ console.log(token);
 };
 
 const authorizeRoles = (...roles) => {
-    return (req, res, next) => {
-      if (!roles.includes(req.user.role)) {
-        return res
-          .status(401)
-          .send({
-            message: `Role:${req.user.role} is not allowed to access this resource`,
-          });
-      }
-      next();
-    };
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res
+        .status(401)
+        .send({
+          message: `Role:${req.user.role} is not allowed to access this resource`,
+        });
+    }
+    next();
   };
+};
 
 
-module.exports = { Auth ,authorizeRoles};
+module.exports = { Auth, authorizeRoles };
 
 
